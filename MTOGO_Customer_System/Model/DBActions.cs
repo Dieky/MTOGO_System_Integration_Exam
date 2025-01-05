@@ -1,20 +1,25 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using MTOGO_Customer_System.Model.DTO;
+using MTOGO_Customer_System.Model.Interfaces;
 
 namespace MTOGO_Customer_System.Model
 {
-    public class DBActions
+    public class DBActions : ICustomerDBActions
     {
-        public bool InsertCustomer(Customer customer)
+        public bool InsertCustomer(Customer customer, string catalog = "MTOGO")
         {
+            if (string.IsNullOrEmpty(customer.Password))
+            {
+                return false;
+            }
             string hashedPassword = PasswordHelper.HashPassword(customer.Password);
             string query = "INSERT INTO Customers (Name, Email, Phone, Address, City, Password) " +
                        "VALUES (@Name, @Email, @Phone, @Address, @City, @Password);";
             bool insertSuccess = false;
             try
             {
-                using (var connection = DatabaseConnection.Instance.Connection)
+                using (var connection = DatabaseConnection.Instance(catalog).Connection)
                 {
                     using (var command = new SqlCommand(query, connection))
                     {
@@ -42,21 +47,22 @@ namespace MTOGO_Customer_System.Model
             catch (Exception ex)
             {
                 Console.WriteLine("An error occurred: " + ex.Message);
+                //throw new Exception("Missing data");
             }
             finally
             {
-                DatabaseConnection.Instance.CloseConnection();
+                DatabaseConnection.Instance(catalog).CloseConnection();
             }
             return insertSuccess;
         }
 
-        public Customer GetCustomerById(int id)
+        public Customer GetCustomerById(int id, string catalog = "MTOGO")
         {
             Customer customer = new Customer();
             string query = "SELECT * FROM Customers WHERE CustomerID = @CustomerId";
             try
             {
-                using (var connection = DatabaseConnection.Instance.Connection)
+                using (var connection = DatabaseConnection.Instance(catalog).Connection)
                 {
                     using (var command = new SqlCommand(query, connection))
                     {
@@ -84,17 +90,17 @@ namespace MTOGO_Customer_System.Model
             }
             finally
             {
-                DatabaseConnection.Instance.CloseConnection();
+                DatabaseConnection.Instance(catalog).CloseConnection();
             }
             return customer;
         }
 
-        public bool AuthenticateCustomer(string email, string enteredPassword)
+        public bool AuthenticateCustomer(string email, string enteredPassword, string catalog = "MTOGO")
         {
             string query = "SELECT Password FROM Customers WHERE Email = @Email;";
             try
             {
-                using (var connection = DatabaseConnection.Instance.Connection)
+                using (var connection = DatabaseConnection.Instance(catalog).Connection)
                 {
                     using (var command = new SqlCommand(query, connection))
                     {
@@ -131,11 +137,11 @@ namespace MTOGO_Customer_System.Model
             }
             finally
             {
-                DatabaseConnection.Instance.CloseConnection();
+                DatabaseConnection.Instance(catalog).CloseConnection();
             }
         }
 
-        public Customer LoginCustomer(string email, string password)
+        public Customer LoginCustomer(string email, string password, string catalog = "MTOGO")
         {
             if (!AuthenticateCustomer(email, password))
             {
@@ -144,7 +150,7 @@ namespace MTOGO_Customer_System.Model
 
             Customer customer = new Customer();
             string query = "SELECT * FROM Customers WHERE Email = @Email;";
-            using (var connection = DatabaseConnection.Instance.Connection)
+            using (var connection = DatabaseConnection.Instance(catalog).Connection)
             {
                 using (var command = new SqlCommand(query, connection))
                 {
@@ -170,14 +176,14 @@ namespace MTOGO_Customer_System.Model
                     }
                     finally
                     {
-                        DatabaseConnection.Instance.CloseConnection();
+                        DatabaseConnection.Instance(catalog).CloseConnection();
                     }
                 }
             }
             return customer;
         }
 
-        public bool UpdateCustomer(Customer customer)
+        public bool UpdateCustomer(Customer customer, string catalog = "MTOGO")
         {
             // SQL query to update only the non-null fields
             // Coalesce ensures that null values does not get updated
@@ -197,7 +203,7 @@ namespace MTOGO_Customer_System.Model
             }
             try
             {
-                using (var connection = DatabaseConnection.Instance.Connection)
+                using (var connection = DatabaseConnection.Instance(catalog).Connection)
                 {
                     using (var command = new SqlCommand(query, connection))
                     {
@@ -226,14 +232,12 @@ namespace MTOGO_Customer_System.Model
             }
             finally
             {
-                DatabaseConnection.Instance.CloseConnection();
+                DatabaseConnection.Instance(catalog).CloseConnection();
             }
             return updateSuccess;
         }
 
-
-
-        public int PlaceOrder(int customerId, List<OrderLine> orderLines)
+        public int PlaceOrder(int customerId, List<OrderLine> orderLines, string catalog = "MTOGO")
         {
             string query = @"
             INSERT INTO Orders (OrderDate, OrderStatus, Total, FK_Orders_RestaurantID, FK_Orders_CustomerID)
@@ -242,7 +246,7 @@ namespace MTOGO_Customer_System.Model
             int orderID = 0;
             try
             {
-                using (var connection = DatabaseConnection.Instance.Connection)
+                using (var connection = DatabaseConnection.Instance(catalog).Connection)
                 {
                     using (var command = new SqlCommand(query, connection))
                     {
@@ -258,28 +262,27 @@ namespace MTOGO_Customer_System.Model
             }
             finally
             {
-                DatabaseConnection.Instance.CloseConnection();
+                DatabaseConnection.Instance(catalog).CloseConnection();
             }
 
-            foreach (OrderLine line in orderLines)
+            foreach (OrderLine orderLine in orderLines)
             {
-                AddOrderLine(orderID, line);
+                AddOrderLine(orderID, orderLine, catalog);
             }
 
             return orderID;
 
         }
 
-        public void AddOrderLine(int orderId, OrderLine orderLine)
+        public void AddOrderLine(int orderId, OrderLine orderLine, string catalog = "MTOGO")
         {
             string query = @"
             INSERT INTO OrderLines (Quantity, FK_OrderLines_OrderID, FK_OrderLines_MenuItemID, FK_OrderLines_RestaurantID)
             VALUES (@Quantity, @FK_OrderLines_OrderID, @FK_OrderLines_MenuItemID, @FK_OrderLines_RestaurantID);";
 
-
             try
             {
-                using (var connection = DatabaseConnection.Instance.Connection)
+                using (var connection = DatabaseConnection.Instance(catalog).Connection)
                 {
                     using (var command = new SqlCommand(query, connection))
                     {
@@ -297,11 +300,11 @@ namespace MTOGO_Customer_System.Model
             }
             finally
             {
-                DatabaseConnection.Instance.CloseConnection();
+                DatabaseConnection.Instance(catalog).CloseConnection();
             }
         }
 
-        public void UpdateOrderPrice(int orderId)
+        public void UpdateOrderPrice(int orderId, string catalog = "MTOGO")
         {
             string query = @"
             WITH TotalCalc AS (
@@ -320,7 +323,7 @@ namespace MTOGO_Customer_System.Model
 
             try
             {
-                using (var connection = DatabaseConnection.Instance.Connection)
+                using (var connection = DatabaseConnection.Instance(catalog).Connection)
                 {
                     using (var command = new SqlCommand(query, connection))
                     {
@@ -335,12 +338,12 @@ namespace MTOGO_Customer_System.Model
             }
             finally
             {
-                DatabaseConnection.Instance.CloseConnection();
+                DatabaseConnection.Instance(catalog).CloseConnection();
             }
 
         }
 
-        public List<OrderDTO> GetOrdersByCustomerId(int customerId)
+        public List<OrderDTO> GetOrdersByCustomerId(int customerId, string catalog = "MTOGO")
         {
             List<OrderDTO> orders = new List<OrderDTO>();
             string query = @"
@@ -358,7 +361,7 @@ namespace MTOGO_Customer_System.Model
 
             try
             {
-                using (var connection = DatabaseConnection.Instance.Connection)
+                using (var connection = DatabaseConnection.Instance(catalog).Connection)
                 {
                     using (var command = new SqlCommand(query, connection))
                     {
@@ -390,7 +393,7 @@ namespace MTOGO_Customer_System.Model
             }
             finally
             {
-                DatabaseConnection.Instance.CloseConnection();
+                DatabaseConnection.Instance(catalog).CloseConnection();
             }
             orders = RemoveRedundantInfo(orders);
             return orders;
@@ -444,7 +447,7 @@ namespace MTOGO_Customer_System.Model
 
         }
 
-        public OrderDTO GetOrderById(int orderId)
+        public OrderDTO GetOrderById(int orderId, string catalog = "MTOGO")
         {
             OrderDTO orderDTO = new OrderDTO();
             List<OrderLineDTO> lines = new List<OrderLineDTO>();
@@ -463,7 +466,7 @@ namespace MTOGO_Customer_System.Model
 
             try
             {
-                using (var connection = DatabaseConnection.Instance.Connection)
+                using (var connection = DatabaseConnection.Instance(catalog).Connection)
                 {
                     using (var command = new SqlCommand(query, connection))
                     {
@@ -493,7 +496,7 @@ namespace MTOGO_Customer_System.Model
             }
             finally
             {
-                DatabaseConnection.Instance.CloseConnection();
+                DatabaseConnection.Instance(catalog).CloseConnection();
             }
             orderDTO.OrderLines = lines;
             return orderDTO;

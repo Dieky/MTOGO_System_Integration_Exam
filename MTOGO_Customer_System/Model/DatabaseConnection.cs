@@ -4,16 +4,21 @@ namespace MTOGO_Customer_System.Model
 {
     public class DatabaseConnection
     {
-        private static readonly Lazy<DatabaseConnection> _instance = new Lazy<DatabaseConnection>(() => new DatabaseConnection());
+       private static readonly Lazy<DatabaseConnection> _instance = new Lazy<DatabaseConnection>(() => new DatabaseConnection());
         private SqlConnection _connection;
         private bool _isConnectionOpen = false;
-        private readonly string _connectionString = "data source=Diekmann-Laptop;initial catalog=MTOGO;trusted_connection=true;TrustServerCertificate=True;";
-        private DatabaseConnection()
+        private string _connectionString;
+
+        // Private constructor, accepts catalog as an optional parameter
+        private DatabaseConnection(string catalog = "MTOGO")
         {
+            _connectionString = $"data source=Diekmann-Laptop;initial catalog={catalog};trusted_connection=true;TrustServerCertificate=True;";
             _connection = new SqlConnection(_connectionString);
         }
 
-        public static DatabaseConnection Instance => _instance.Value;
+        // The Instance property, which now takes a catalog parameter
+        public static DatabaseConnection Instance(string catalog = "MTOGO") => new DatabaseConnection(catalog);
+
 
         public SqlConnection Connection
         {

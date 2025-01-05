@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTOGO_Restaurant_System", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIGateway", "APIGateway\APIGateway.csproj", "{E6AE81A4-141A-4D61-A44F-D44BB97FBC28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTOGO_Reviews_Complaints_System", "MTOGO_Reviews_Complaints_System\MTOGO_Reviews_Complaints_System.csproj", "{FACC445E-F999-4345-B7CE-D906357690DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTOGO_Reviews_Complaints_System", "MTOGO_Reviews_Complaints_System\MTOGO_Reviews_Complaints_System.csproj", "{FACC445E-F999-4345-B7CE-D906357690DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTOGO_Courier_System", "MTOGO_Courier_System\MTOGO_Courier_System.csproj", "{E7720B3A-901F-4BC3-B888-02A7863A715A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTOGO_Courier_System", "MTOGO_Courier_System\MTOGO_Courier_System.csproj", "{E7720B3A-901F-4BC3-B888-02A7863A715A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTOGO_Customer_System_Tests", "MTOGO_Customer_System_Tests\MTOGO_Customer_System_Tests.csproj", "{7CACC006-D429-4E23-B9EC-D26B63E324FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{E7720B3A-901F-4BC3-B888-02A7863A715A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7720B3A-901F-4BC3-B888-02A7863A715A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7720B3A-901F-4BC3-B888-02A7863A715A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CACC006-D429-4E23-B9EC-D26B63E324FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CACC006-D429-4E23-B9EC-D26B63E324FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CACC006-D429-4E23-B9EC-D26B63E324FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CACC006-D429-4E23-B9EC-D26B63E324FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
