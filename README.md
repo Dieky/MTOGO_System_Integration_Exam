@@ -6,4 +6,5 @@ MTOGO is a fictive Wolt/Just-eat like company. MTOGO handles orders through thei
 ## Software quality project folder [Here](https://github.com/Dieky/MTOGO_System_Integration_Exam/tree/master/MTOGO_Customer_System_Tests)
 
 ## Youtube links
-- System integration: https://www.youtube.com/watch?v=iTR9PJEDXgw 
+- System integration: https://www.youtube.com/watch?v=iTR9PJEDXgw
+- Software quality: https://www.youtube.com/watch?v=2LKQWgaw4uQ
