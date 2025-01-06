@@ -16,7 +16,6 @@ namespace MTOGO_Customer_System.Model
             _connection = new SqlConnection(_connectionString);
         }
 
-        // The Instance property, which now takes a catalog parameter
         public static DatabaseConnection Instance(string catalog = "MTOGO") => new DatabaseConnection(catalog);
 
 
