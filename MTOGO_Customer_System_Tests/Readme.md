@@ -44,5 +44,5 @@ Creates a folder containing an xml file, that can then be turned into an html fi
 
 reportgenerator -reports:".\TestResults\38fe755b-1d88-4e80-8414-d27c4008abed\coverage.cobertura.xml" -targetdir:"coverageresults" -reporttypes: Html
 
-The report can be found here.
+A screenshot of the report can be found [here](https://github.com/Dieky/MTOGO_System_Integration_Exam/blob/master/MTOGO_Customer_System_Tests/coverageresults/Screenshot%202025-01-05%20190654.png).
 
